@@ -1,129 +1,129 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+#!/user/bin
+# -*- coding:utf-8 -*-
 
-# C extensions
-*.so
+##Importlar
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+import random
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+##Kolaylık Olsun Diye Printleri Baştan Ayarlıyorum
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+first_opponent_message = '———– İlk Kahraman ———–'
+second_opponent_message = '———– İkinci Kahraman ———–'
+name_prompt_message = 'Lütfen kahramanınızın adını yazın: '
+name_invalid_message = ' alındı, lütfen başka bir isim seçin!'
+heads_tails_message = 'Yazı tura sonucu: {} önce başlar!'
+attack_message = '———– {} Saldırı !! ———–'
+attack_magnitude_selection_message = 'Saldırı büyüklüğünüzü 1 ile 50 arasında seçin: '
+attack_magnitude_invalid_message = 'Saldırı büyüklüğü 1 ile 50 arasında olmalıdır.'
+attack_missed_message = 'Ooopsy! {} saldırıyı kaçırdı!'
+attack_report_message = '{} {} hasar verdi !!'
+thx4play = 'Oynadığın İçin Teşekkür Ederim!!!'
+game_over_report = '''########################################################
+######################### {} kazandı !!#######################
+########################################################'''
+player_choice_print = 'Devam Etmek İçin Y/N'
+wrong_input = 'Lütfen Sadece Y/N giriniz.'
+turn = 0
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
+##Kullanıcıların Canını 100 e Eşitleme
 
-# Translations
-*.mo
-*.pot
+first_opponent_health = 100
+second_opponent_health = 100
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+##Basit İsim Alma İnputları
 
-# Flask stuff:
-instance/
-.webassets-cache
+print(first_opponent_message)
+first_opponent_name = input(name_prompt_message)
 
-# Scrapy stuff:
-.scrapy
+print(second_opponent_message)
+second_opponent_name = input(name_prompt_message)
 
-# Sphinx documentation
-docs/_build/
+while first_opponent_name == second_opponent_name:
+    print(second_opponent_name + name_invalid_message + '\n' + second_opponent_message)
+    second_opponent_name = input(name_prompt_message)
 
-# PyBuilder
-target/
+##Can Grafiği 
 
-# Jupyter Notebook
-.ipynb_checkpoints
+def print_healths():
+    global first_opponent_name, second_opponent_name, first_opponent_health, second_opponent_health
+    print(first_opponent_name.ljust(70) + second_opponent_name.ljust(70))
+    print(str(f'HP[{first_opponent_health}]:' + '|' * int(first_opponent_health / 2)).ljust(70) + str(f'HP[{second_opponent_health}]:' + '|' * int(second_opponent_health / 2)).ljust(70))
 
-# IPython
-profile_default/
-ipython_config.py
+##Hasar Girdisi Alma
 
-# pyenv
-.python-version
+def get_attack_value():
+    value = int(input(attack_magnitude_selection_message))
+    while not 1 <= value <= 50:
+        print(attack_magnitude_invalid_message)
+        value = int(input(attack_magnitude_selection_message))
 
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
+##Missleme Şansı
+##(Bir hasar girildiğinde örn: 50 yukarda hasar girdisi alma kısmında value inputu alıyoruz ve aşağıda random değerinden cıkarıyoruz örn// 50 yazdığımız zaman 100 - 50den %50 şansla saldırındın başarılı olma ihtinali oluyor)
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
+    if random.randint(1, 100) <= (100 - value):
+        return value
+    else:
+        return 0
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
+##Yazı Tura
 
-# SageMath parsed files
-*.sage.py
+def play_game():
+    global first_opponent_name, second_opponent_name, first_opponent_health, second_opponent_health
+    if random.randint(0, 1) == 0:
+        turn = 0
+        print(heads_tails_message.format(first_opponent_name))
+    else:
+        turn = 1
+        print(heads_tails_message.format(second_opponent_name))
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+    while first_opponent_health > 0 and second_opponent_health > 0:
+        print_healths()
+        if turn == 0:
+            print(attack_message.format(first_opponent_name))
+            value = get_attack_value()
+            if value == 0:
+                print(attack_missed_message.format(first_opponent_name))
+            else:
+                print(attack_report_message.format(first_opponent_name, value))
+                second_opponent_health -= value
+            turn = 1
+        else:
+            print(attack_message.format(second_opponent_name))
+            value = get_attack_value()
+            if value == 0:
+                print(attack_missed_message.format(second_opponent_name))
+            else:
+                print(attack_report_message.format(second_opponent_name, value))
+                first_opponent_health -= value
+            turn = 0
 
-# Spyder project settings
-.spyderproject
-.spyproject
+    ##Olum Raporu 
 
-# Rope project settings
-.ropeproject
+    if first_opponent_health > 0:
+        print(game_over_report.format(first_opponent_name))
+    else: 
+        print(game_over_report.format(second_opponent_name))
 
-# mkdocs documentation
-/site
+def cleanup():
+    global first_opponent_health,second_opponent_health
+    first_opponent_health = 100
+    second_opponent_health = 100
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+play_game()   
 
-# Pyre type checker
-.pyre/
+##Tekrar Başlama
+
+player_choice = input(player_choice_print)
+while player_choice.upper() != 'Y' and player_choice.upper() != 'N':
+    print(wrong_input)
+    player_choice = input(player_choice_print)
+
+while player_choice.upper() == 'Y':
+    cleanup()
+    play_game()
+    player_choice = input(player_choice_print)
+    while player_choice.upper() != 'Y' and player_choice.upper() != 'N':
+        print(wrong_input)
+        player_choice = input(player_choice_print)
+
+print(thx4play)
